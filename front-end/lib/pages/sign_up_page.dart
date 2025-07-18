@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _confirmPasswordController = TextEditingController();
   XFile? _pickedImage;
   final ImagePicker _picker = ImagePicker();
-  String? _docType; // 'passeport' or 'carte'
+// 'passeport' or 'carte'
 
   @override
   void dispose() {
@@ -481,7 +481,6 @@ class _SignUpPageState extends State<SignUpPage> {
             );
             if (docType != null) {
               setState(() {
-                _docType = docType;
               });
               // Step 2: Show photo picker
               showModalBottomSheet(
