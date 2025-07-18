@@ -17,6 +17,10 @@ class _CameraPageState extends State<CameraPage> {
   bool isRecording = false;
   String? videoPath;
 
+  // Example teleprompter text
+  final String teleprompterText = 'This is a sample teleprompter text.\n' * 10 +
+      'You can scroll this text if it is too long to fit on the screen.';
+
   @override
   void initState() {
     super.initState();
@@ -79,6 +83,22 @@ class _CameraPageState extends State<CameraPage> {
       body: Stack(
         children: [
           CameraPreview(controller!),
+          if (isRecording)
+            Container(
+              color: Colors.white.withOpacity(0.3),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      teleprompterText,
+                      style: TextStyle(fontSize: 24, color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 32,
             left: 0,
