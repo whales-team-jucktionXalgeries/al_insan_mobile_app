@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/welcome.dart';
+import '../../components/footer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DevConnect',
-      home: const WelcomePage(),
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Your scrollable content here
+            ],
+          ),
+        ),
+        bottomNavigationBar: CustomFooter(),
+      ),
     );
   }
 }
