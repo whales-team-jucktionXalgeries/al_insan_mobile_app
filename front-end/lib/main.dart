@@ -12,17 +12,23 @@ List<CameraDescription> cameras = [];
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseManager.init();
+try {
   final client = Supabase.instance.client;
-    final res = await client.auth.signInWithPassword(
+  final res = await client.auth.signInWithPassword(
     email: 'whalesselahw8@gmail.com',
     password: 'Sk2345sk',
   );
 
-    if (res.user != null) {
-    print("Auto-login successful: ${res.user!.id}");
+  if (res.user != null) {
+    print("✅ Auto-login successful: ${res.user!.id}");
   } else {
-    print("Auto-login failed");
+    print("⚠️ Auto-login failed");
   }
+} on AuthException catch (e) {
+  print("❌ AuthException: ${e.message}");
+} catch (e) {
+  print("❌ Unexpected error: $e");
+}
 
   cameras = await availableCameras();
   runApp(MyApp());
