@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -117,7 +118,11 @@ class _CameraPageState extends State<CameraPage> {
     final Directory appDir = await getApplicationDocumentsDirectory();
     final String filePath =
         '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
+    print('Saving video to: $filePath');
     await file.saveTo(filePath);
+    print('Saved to app dir, now saving to gallery...');
+    await GallerySaver.saveVideo(filePath);
+    print('Saved to gallery!');
     setState(() {
       isRecording = false;
       videoPath = filePath;
