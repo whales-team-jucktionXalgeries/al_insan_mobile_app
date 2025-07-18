@@ -1,14 +1,24 @@
 import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../pages/chats.dart';
 
 class CustomFooter extends StatefulWidget {
+  final int selectedIndex;
+  const CustomFooter({Key? key, this.selectedIndex = 0}) : super(key: key);
+
   @override
   _CustomFooterState createState() => _CustomFooterState();
 }
 
 class _CustomFooterState extends State<CustomFooter> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.selectedIndex;
+  }
 
   final List<String> _titles = ['Accueil', 'Aider', 'Messagerie', 'Profile'];
 
@@ -25,6 +35,17 @@ class _CustomFooterState extends State<CustomFooter> {
     'assets/icons/message-full.svg',
     'assets/icons/user_full.svg',
   ];
+
+  void _onItemTapped(int index) {
+    if (index == _currentIndex) return;
+    if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ChatsPage()),
+      );
+    }
+    // Add navigation for other indices if needed
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +86,7 @@ class _CustomFooterState extends State<CustomFooter> {
           elevation: 0,
           iconSize: 32,
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
+          onTap: _onItemTapped,
           items: List.generate(_titles.length, (index) {
             return BottomNavigationBarItem(
               icon: SvgPicture.asset(
