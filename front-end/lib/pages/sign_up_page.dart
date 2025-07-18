@@ -5,6 +5,9 @@ import 'package:al_insan_app_front/components/date_selection.dart';
 import 'dart:ui';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:diacritic/diacritic.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -23,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _confirmPasswordController = TextEditingController();
   XFile? _pickedImage;
   final ImagePicker _picker = ImagePicker();
-// 'passeport' or 'carte'
+  String? _docType;
 
   @override
   void dispose() {
@@ -234,10 +237,59 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Confirm button
                           PrimaryButton(
                             label: 'Confirmer',
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState?.validate() ?? false) {
-                                // Show success popup
-                                _showSuccessPopup();
+                                // Passport OCR logic
+                                if (_docType == 'passeport' &&
+                                    _pickedImage != null) {
+                                  final ocrResult = await uploadPassport(
+                                      File(_pickedImage!.path));
+                                  if (ocrResult != null) {
+                                    final inputNom =
+                                        normalizeName(_nomController.text);
+                                    final inputPrenom =
+                                        normalizeName(_prenomController.text);
+                                    final ocrSurname = normalizeName(
+                                        ocrResult['surname'] ?? '');
+                                    final ocrGivenNamesRaw = ocrResult['names'] ?? '';
+                                    final ocrGivenNames = normalizeName(extractRealGivenNames(ocrGivenNamesRaw));
+                                    // Strict word-by-word comparison, but allow extra trailing words in MRZ
+                                    bool nameMatch = inputNom == ocrSurname;
+                                    List<String> inputPrenomWords = inputPrenom.split(' ');
+                                    List<String> ocrGivenNamesWords = ocrGivenNames.split(' ');
+                                    bool prenomMatch = true;
+                                    for (int i = 0; i < inputPrenomWords.length; i++) {
+                                      if (i >= ocrGivenNamesWords.length || inputPrenomWords[i] != ocrGivenNamesWords[i]) {
+                                        prenomMatch = false;
+                                        break;
+                                      }
+                                    }
+                                    if (nameMatch && prenomMatch) {
+                                      _showSuccessPopup();
+                                    } else {
+                                      _showErrorPopup();
+                                    }
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Erreur'),
+                                        content: const Text(
+                                            'Impossible de lire le passeport.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  // Fallback: show success popup if not using passport
+                                  _showSuccessPopup();
+                                }
                               }
                             },
                           ),
@@ -481,6 +533,7 @@ class _SignUpPageState extends State<SignUpPage> {
             );
             if (docType != null) {
               setState(() {
+                _docType = docType;
               });
               // Step 2: Show photo picker
               showModalBottomSheet(
@@ -663,6 +716,135 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       },
     );
+  }
+
+  void _showErrorPopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.15),
+      builder: (context) {
+        return Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 22),
+            decoration: ShapeDecoration(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(
+                  width: 1,
+                  color: Color(0xFFE5E7EB),
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0x0C000000),
+                  blurRadius: 6,
+                  offset: Offset(0, 4),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Color(0x19000000),
+                  blurRadius: 15,
+                  offset: Offset(0, 10),
+                  spreadRadius: -3,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 310,
+                  child: Text(
+                    'Erreur',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFFC70036),
+                      fontSize: 24,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                      height: 1.87,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const SizedBox(
+                  width: 310,
+                  child: Text(
+                    'Le nom ne correspond pas au nom du passeport.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF1F2420),
+                      fontSize: 15,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                      height: 1.50,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 21),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 12),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFC70036),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Réessayer',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper to upload passport and get OCR result
+  Future<Map<String, dynamic>?> uploadPassport(File imageFile) async {
+    var uri = Uri.parse(
+        'http://192.168.1.193:8000/ocr/passport'); // Local network IP for backend
+    var request = http.MultipartRequest('POST', uri)
+      ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      var respStr = await response.stream.bytesToString();
+      return json.decode(respStr);
+    } else {
+      return null;
+    }
+  }
+
+  String normalizeName(String name) {
+    return removeDiacritics(name)
+        .replaceAll('<', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim()
+        .toUpperCase();
+  }
+
+  // Extract only the real given names from the MRZ (ignore everything after the first <<)
+  String extractRealGivenNames(String mrzNames) {
+    final match = RegExp(r'^(.*?)(<{2,}.*)?$').firstMatch(mrzNames);
+    String mainPart = match != null ? match.group(1) ?? '' : mrzNames;
+    // Split on <, remove empty and single-letter words
+    List<String> words = mainPart.split('<').where((w) => w.trim().length > 1).toList();
+    return words.join(' ');
   }
 }
 

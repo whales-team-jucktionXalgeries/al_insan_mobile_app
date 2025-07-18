@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: camera_avfoundation
-      sha256: "9e02b36c9c09a01edcb0f2bfc58a94ed38bbbf37907759d651707bb0f327a365"
+      sha256: b389be4a325742a3950e50475067d95a3de2fb32ba3f31bfcc62b0b6d19907a6
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.20+3"
+    version: "0.9.20+4"
   camera_platform_interface:
     dependency: transitive
     description:
@@ -153,6 +153,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  diacritic:
+    dependency: "direct main"
+    description:
+      name: diacritic
+      sha256: "12981945ec38931748836cd76f2b38773118d0baef3c68404bdfde9566147876"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
   fake_async:
     dependency: transitive
     description:
