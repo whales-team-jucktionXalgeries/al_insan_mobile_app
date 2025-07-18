@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'camera_page.dart';
+import 'package:al_insan_app_front/services/supabase_manager.dart';
 
 List<CameraDescription> cameras = [];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SupabaseManager.init();
   cameras = await availableCameras();
   runApp(MyApp());
 }

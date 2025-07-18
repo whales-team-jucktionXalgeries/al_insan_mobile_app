@@ -3,6 +3,8 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:al_insan_app_front/services/video_queue.dart';
+import 'package:al_insan_app_front/services/video_sync_service.dart';
 
 class CameraPage extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -83,25 +85,35 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  Future<void> stopVideoRecording() async {
-    if (controller == null || !controller!.value.isRecordingVideo) return;
-    final XFile file = await controller!.stopVideoRecording();
-    final Directory appDir = await getApplicationDocumentsDirectory();
-    final String filePath =
-        '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
-    print('Saving video to: $filePath');
-    await file.saveTo(filePath);
-    print('Saved to app dir, now saving to gallery...');
-    await GallerySaver.saveVideo(filePath);
-    print('Saved to gallery!');
-    setState(() {
-      isRecording = false;
-      videoPath = filePath;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Video saved to $filePath')),
-    );
-  }
+Future<void> stopVideoRecording() async {
+  if (controller == null || !controller!.value.isRecordingVideo) return;
+  final XFile file = await controller!.stopVideoRecording();
+  final Directory appDir = await getApplicationDocumentsDirectory();
+  final String filePath =
+      '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
+  print('Saving video to: $filePath');
+  await file.saveTo(filePath);
+  print('Saved to app dir, now saving to gallery...');
+  await GallerySaver.saveVideo(filePath);
+  print('Saved to gallery!');
+  
+  setState(() {
+    isRecording = false;
+    videoPath = filePath;
+  });
+
+  // 🧠 Your Supabase user ID (you'll need to pass it here)
+  final userId = "USER_ID_HERE"; // Replace with actual user ID logic
+
+  // ✅ Add to queue and trigger sync
+  await VideoQueue.addToQueue(filePath, userId);
+  await VideoSyncService.syncQueuedVideos();
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Video saved and queued for upload!')),
+  );
+}
+
 
   @override
   void dispose() {
