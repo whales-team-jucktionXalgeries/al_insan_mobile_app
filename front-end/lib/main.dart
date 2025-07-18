@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -64,6 +66,8 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
+  bool isRecording = false;
+  String? videoPath;
 
   @override
   void initState() {
@@ -79,6 +83,34 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  Future<void> startVideoRecording() async {
+    if (controller == null || controller!.value.isRecordingVideo) return;
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String filePath =
+        '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
+    await controller!.startVideoRecording();
+    setState(() {
+      isRecording = true;
+      videoPath = filePath;
+    });
+  }
+
+  Future<void> stopVideoRecording() async {
+    if (controller == null || !controller!.value.isRecordingVideo) return;
+    final XFile file = await controller!.stopVideoRecording();
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String filePath =
+        '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
+    await file.saveTo(filePath);
+    setState(() {
+      isRecording = false;
+      videoPath = filePath;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Video saved to $filePath')),
+    );
+  }
+
   @override
   void dispose() {
     controller?.dispose();
@@ -92,7 +124,23 @@ class _CameraPageState extends State<CameraPage> {
     }
     return Scaffold(
       appBar: AppBar(title: Text('Selfie Camera')),
-      body: CameraPreview(controller!),
+      body: Stack(
+        children: [
+          CameraPreview(controller!),
+          Positioned(
+            bottom: 32,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: FloatingActionButton(
+                onPressed:
+                    isRecording ? stopVideoRecording : startVideoRecording,
+                child: Icon(isRecording ? Icons.stop : Icons.videocam),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
