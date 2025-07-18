@@ -8,21 +8,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:al_insan_app_front/main.dart';
+import 'package:al_insan_app_front/pages/welcome.dart';
 
 void main() {
-  testWidgets('Camera button is present and navigates to CameraPage',
+  testWidgets('WelcomePage displays title and input fields',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: HomePage()));
+    await tester.pumpWidget(const MaterialApp(home: WelcomePage()));
 
-    // Verify the button is present
-    expect(find.text('Open Selfie Camera'), findsOneWidget);
+    // Verify the title is present
+    expect(find.text('Bienvenue'), findsOneWidget);
 
-    // Tap the button and trigger navigation
-    await tester.tap(find.text('Open Selfie Camera'));
-    await tester.pumpAndSettle();
+    // Verify the subtitle is present
+    expect(find.text('Connectez-vous pour continuer à aider les autres'),
+        findsOneWidget);
 
-    // After navigation, CameraPage should be present (AppBar title check)
-    expect(find.text('Selfie Camera'), findsOneWidget);
+    // Verify the two WelcomeInput fields are present
+    expect(find.text("Nom d'utilisateur"), findsOneWidget);
+    expect(find.text("Mot de passe"), findsOneWidget);
   });
 }
