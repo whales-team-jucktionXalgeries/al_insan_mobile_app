@@ -1,59 +1,80 @@
-import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class WelcomeInput extends StatelessWidget {
-  final String text;
-  final Widget icon;
+class WelcomeInput extends StatefulWidget {
+  final String hintText;
+  final bool isAlphabetOnly;
+  final bool isPassword;
 
   const WelcomeInput({
     Key? key,
-    required this.text,
-    required this.icon,
+    required this.hintText,
+    this.isAlphabetOnly = false,
+    this.isPassword = false,
   }) : super(key: key);
+
+  @override
+  State<WelcomeInput> createState() => _WelcomeInputState();
+}
+
+class _WelcomeInputState extends State<WelcomeInput> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: ShapeDecoration(
-        color: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 1,
-            color: AppColors.border,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 0.5,
-            offset: Offset(0, 1),
-            spreadRadius: 0.05,
-          )
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFF3F4F6),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // Input field
           Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: AppColors.placeholder,
-                fontSize: 14,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-                height: 1.33,
+            child: TextField(
+              obscureText: widget.isPassword ? _obscureText : false,
+              inputFormatters: widget.isAlphabetOnly
+                  ? [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'))]
+                  : [],
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                border: InputBorder.none,
               ),
             ),
           ),
-          SizedBox(
-            width: 23,
-            height: 23,
-            child: icon,
-          ),
+
+          // If password, show eye icon
+          if (widget.isPassword)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: SvgPicture.asset(
+                  _obscureText
+                      ? 'assets/icons/eye-slash.svg'
+                      : 'assets/icons/eye.svg',
+                  width: 23,
+                  height: 23,
+                ),
+              ),
+            ),
+
+          // If not password, show user icon on the right
+          if (!widget.isPassword)
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: SvgPicture.asset(
+                'assets/icons/user.svg',
+                width: 23,
+                height: 23,
+              ),
+            ),
         ],
       ),
     );
