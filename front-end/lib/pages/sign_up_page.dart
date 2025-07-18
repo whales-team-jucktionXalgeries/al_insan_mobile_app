@@ -23,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _confirmPasswordController = TextEditingController();
   XFile? _pickedImage;
   final ImagePicker _picker = ImagePicker();
+  String? _docType; // 'passeport' or 'carte'
 
   @override
   void dispose() {
@@ -452,7 +453,8 @@ class _SignUpPageState extends State<SignUpPage> {
         InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () async {
-            showModalBottomSheet(
+            // Step 1: Ask for document type
+            final docType = await showModalBottomSheet<String>(
               context: context,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -463,42 +465,73 @@ class _SignUpPageState extends State<SignUpPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
-                        leading: const Icon(Icons.camera_alt),
-                        title: const Text('Prendre une photo'),
-                        onTap: () async {
-                          Navigator.pop(context);
-                          final XFile? image = await _picker.pickImage(
-                            source: ImageSource.camera,
-                            imageQuality: 85,
-                          );
-                          if (image != null) {
-                            setState(() {
-                              _pickedImage = image;
-                            });
-                          }
-                        },
+                        leading: const Icon(Icons.badge_outlined),
+                        title: const Text('Carte d\'identité'),
+                        onTap: () => Navigator.pop(context, 'carte'),
                       ),
                       ListTile(
-                        leading: const Icon(Icons.photo_library),
-                        title: const Text('Choisir depuis la galerie'),
-                        onTap: () async {
-                          Navigator.pop(context);
-                          final XFile? image = await _picker.pickImage(
-                            source: ImageSource.gallery,
-                            imageQuality: 85,
-                          );
-                          if (image != null) {
-                            setState(() {
-                              _pickedImage = image;
-                            });
-                          }
-                        },
+                        leading: const Icon(Icons.book_outlined),
+                        title: const Text('Passeport'),
+                        onTap: () => Navigator.pop(context, 'passeport'),
                       ),
                     ],
                   ),
                 );
               },
             );
+            if (docType != null) {
+              setState(() {
+                _docType = docType;
+              });
+              // Step 2: Show photo picker
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (context) {
+                  return SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.camera_alt),
+                          title: const Text('Prendre une photo'),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            final XFile? image = await _picker.pickImage(
+                              source: ImageSource.camera,
+                              imageQuality: 85,
+                            );
+                            if (image != null) {
+                              setState(() {
+                                _pickedImage = image;
+                              });
+                            }
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.photo_library),
+                          title: const Text('Choisir depuis la galerie'),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            final XFile? image = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                              imageQuality: 85,
+                            );
+                            if (image != null) {
+                              setState(() {
+                                _pickedImage = image;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
