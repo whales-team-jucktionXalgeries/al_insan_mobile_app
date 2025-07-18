@@ -1,8 +1,9 @@
+import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeInput extends StatelessWidget {
   final String text;
-  final IconData icon;
+  final Widget icon;
 
   const WelcomeInput({
     Key? key,
@@ -16,17 +17,17 @@ class WelcomeInput extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: ShapeDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         shape: RoundedRectangleBorder(
           side: const BorderSide(
             width: 1,
-            color: Color(0xFFE5E7EB),
+            color: AppColors.border,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         shadows: const [
           BoxShadow(
-            color: Color(0x051D293D),
+            color: AppColors.shadow,
             blurRadius: 0.5,
             offset: Offset(0, 1),
             spreadRadius: 0.05,
@@ -40,8 +41,8 @@ class WelcomeInput extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
-                color: Color(0xFF919592),
-                fontSize: 15,
+                color: AppColors.placeholder,
+                fontSize: 14,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
                 height: 1.33,
@@ -51,11 +52,7 @@ class WelcomeInput extends StatelessWidget {
           SizedBox(
             width: 23,
             height: 23,
-            child: Icon(
-              icon,
-              size: 23,
-              color: Colors.black, // or any color you prefer
-            ),
+            child: icon,
           ),
         ],
       ),

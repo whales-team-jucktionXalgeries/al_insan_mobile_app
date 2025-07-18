@@ -7,5 +7,5 @@ class AppColors {
   static const surface = Colors.white;
   static const border = Color(0xFFE5E7EB);
   static const shadow = Color(0x051D293D);
-  
+  static const placeholder = Color(0xFF919592);
 }
