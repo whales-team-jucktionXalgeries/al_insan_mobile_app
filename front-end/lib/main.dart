@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:video_player/video_player.dart';
 import 'camera_page.dart';
 import 'package:al_insan_app_front/services/supabase_manager.dart';
@@ -11,6 +12,18 @@ List<CameraDescription> cameras = [];
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseManager.init();
+  final client = Supabase.instance.client;
+    final res = await client.auth.signInWithPassword(
+    email: 'whalesselahw8@gmail.com',
+    password: 'Sk2345sk',
+  );
+
+    if (res.user != null) {
+    print("Auto-login successful: ${res.user!.id}");
+  } else {
+    print("Auto-login failed");
+  }
+
   cameras = await availableCameras();
   runApp(MyApp());
 }
