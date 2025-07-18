@@ -17,14 +17,49 @@ class _CameraPageState extends State<CameraPage> {
   bool isRecording = false;
   String? videoPath;
 
-  // Example teleprompter text
-  final String teleprompterText = 'This is a sample teleprompter text.\n' * 10 +
-      'You can scroll this text if it is too long to fit on the screen.';
+  // Example list of Arabic names
+  final List<String> names = [
+    'محمد أحمد علي',
+    'سارة يوسف',
+    'خالد إبراهيم',
+    'ليلى حسن',
+    'عبدالله محمود',
+    'فاطمة الزهراء',
+    'ياسين عمر',
+    'نور الدين',
+    'جميلة سعيد',
+    'سامي عبدالعزيز',
+  ];
+
+  int nameIndex = 0;
+  static const int namesPerPage = 4;
+
+  List<String> get currentNames {
+    int end = (nameIndex + namesPerPage < names.length)
+        ? nameIndex + namesPerPage
+        : names.length;
+    return names.sublist(nameIndex, end);
+  }
+
+  bool get hasNextPage => nameIndex + namesPerPage < names.length;
+
+  void nextNames() {
+    if (hasNextPage) {
+      setState(() {
+        nameIndex += namesPerPage;
+      });
+    }
+  }
+
+  void resetNames() {
+    setState(() {
+      nameIndex = 0;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // Find the front camera
     final frontCamera = widget.cameras.firstWhere(
       (camera) => camera.lensDirection == CameraLensDirection.front,
     );
@@ -44,6 +79,7 @@ class _CameraPageState extends State<CameraPage> {
     setState(() {
       isRecording = true;
       videoPath = filePath;
+      resetNames();
     });
   }
 
@@ -86,17 +122,56 @@ class _CameraPageState extends State<CameraPage> {
           if (isRecording)
             Container(
               color: Colors.white.withOpacity(0.3),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: SingleChildScrollView(
-                    child: Text(
-                      teleprompterText,
-                      style: TextStyle(fontSize: 24, color: Colors.black),
-                      textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: currentNames
+                            .map((name) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0),
+                                  child: Text(
+                                    name,
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 32.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${(nameIndex / namesPerPage).ceil() + 1} / ${(names.length / namesPerPage).ceil()}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(width: 32),
+                        if (hasNextPage)
+                          ElevatedButton(
+                            onPressed: nextNames,
+                            child: const Text('التالي',
+                                style: TextStyle(fontSize: 20)),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           Positioned(
