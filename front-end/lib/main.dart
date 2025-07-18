@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
-import 'pages/sign_up_page.dart';
+import 'package:camera/camera.dart';
+import 'package:al_insan_app_front/camera_page.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DevConnect',
-      home: const SignUpPage(),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: CameraPage(cameras: cameras),
     );
   }
 }
