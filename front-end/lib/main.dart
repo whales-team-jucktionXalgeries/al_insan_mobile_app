@@ -20,14 +20,14 @@ try {
   );
 
   if (res.user != null) {
-    print("✅ Auto-login successful: ${res.user!.id}");
+    print("Auto-login successful: ${res.user!.id}");
   } else {
-    print("⚠️ Auto-login failed");
+    print("Auto-login failed");
   }
 } on AuthException catch (e) {
-  print("❌ AuthException: ${e.message}");
+  print("AuthException: ${e.message}");
 } catch (e) {
-  print("❌ Unexpected error: $e");
+  print("Unexpected error: $e");
 }
 
   cameras = await availableCameras();
