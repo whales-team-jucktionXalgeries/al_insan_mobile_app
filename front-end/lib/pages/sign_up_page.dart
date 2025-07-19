@@ -47,8 +47,12 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.only(top: 0, left: 0, right: 0, bottom: 0),
+            padding: const EdgeInsets.only(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            ),
             child: Center(
               child: Container(
                 width: 374,
@@ -60,16 +64,19 @@ class _SignUpPageState extends State<SignUpPage> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new,
-                            size: 24, color: Color(0xFF101828)),
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 24,
+                          color: Color(0xFF101828),
+                        ),
                         onPressed: () {
                           Navigator.of(context).maybePop();
                         },
                       ),
                     ),
                     SizedBox(
-                        height:
-                            16), // Space between back icon and Nom field (adjust as needed)
+                      height: 16,
+                    ), // Space between back icon and Nom field (adjust as needed)
                     // Main form content
                     Form(
                       key: _formKey,
@@ -85,7 +92,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             hint: 'Nom',
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-ZÀ-ÿ\s]')),
+                                RegExp(r'[a-zA-ZÀ-ÿ\s]'),
+                              ),
                             ],
                             keyboardType: TextInputType.name,
                             validator: (value) {
@@ -105,7 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             hint: 'Prenom',
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-ZÀ-ÿ\s]')),
+                                RegExp(r'[a-zA-ZÀ-ÿ\s]'),
+                              ),
                             ],
                             keyboardType: TextInputType.name,
                             validator: (value) {
@@ -148,7 +157,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                   return Center(
                                     child: BackdropFilter(
                                       filter: ImageFilter.blur(
-                                          sigmaX: 6, sigmaY: 6),
+                                        sigmaX: 6,
+                                        sigmaY: 6,
+                                      ),
                                       child: Dialog(
                                         backgroundColor: Colors.transparent,
                                         elevation: 0,
@@ -243,55 +254,103 @@ class _SignUpPageState extends State<SignUpPage> {
                                 // Passport OCR logic
                                 if (_docType == 'passeport' &&
                                     _pickedImage != null) {
+                                  print(
+                                    '🔍 Starting passport OCR verification...',
+                                  );
                                   final ocrResult = await uploadPassport(
-                                      File(_pickedImage!.path));
+                                    File(_pickedImage!.path),
+                                  );
                                   if (ocrResult != null) {
-                                    final inputNom =
-                                        normalizeName(_nomController.text);
-                                    final inputPrenom =
-                                        normalizeName(_prenomController.text);
+                                    print('✅ OCR Result received: $ocrResult');
+
+                                    final inputNom = normalizeName(
+                                      _nomController.text,
+                                    );
+                                    final inputPrenom = normalizeName(
+                                      _prenomController.text,
+                                    );
                                     final ocrSurname = normalizeName(
-                                        ocrResult['surname'] ?? '');
-                                    final ocrGivenNamesRaw = ocrResult['names'] ?? '';
-                                    final ocrGivenNames = normalizeName(extractRealGivenNames(ocrGivenNamesRaw));
+                                      ocrResult['surname'] ?? '',
+                                    );
+                                    final ocrGivenNamesRaw =
+                                        ocrResult['names'] ?? '';
+                                    final ocrGivenNames = normalizeName(
+                                      extractRealGivenNames(ocrGivenNamesRaw),
+                                    );
+
+                                    print('📝 Input Nom: "$inputNom"');
+                                    print('📝 Input Prenom: "$inputPrenom"');
+                                    print('📄 OCR Surname: "$ocrSurname"');
+                                    print(
+                                      '📄 OCR Given Names: "$ocrGivenNames"',
+                                    );
+
                                     // Strict word-by-word comparison, but allow extra trailing words in MRZ
                                     bool nameMatch = inputNom == ocrSurname;
-                                    List<String> inputPrenomWords = inputPrenom.split(' ');
-                                    List<String> ocrGivenNamesWords = ocrGivenNames.split(' ');
+                                    List<String> inputPrenomWords = inputPrenom
+                                        .split(' ');
+                                    List<String> ocrGivenNamesWords =
+                                        ocrGivenNames.split(' ');
                                     bool prenomMatch = true;
-                                    for (int i = 0; i < inputPrenomWords.length; i++) {
-                                      if (i >= ocrGivenNamesWords.length || inputPrenomWords[i] != ocrGivenNamesWords[i]) {
+                                    for (
+                                      int i = 0;
+                                      i < inputPrenomWords.length;
+                                      i++
+                                    ) {
+                                      if (i >= ocrGivenNamesWords.length ||
+                                          inputPrenomWords[i] !=
+                                              ocrGivenNamesWords[i]) {
                                         prenomMatch = false;
                                         break;
                                       }
                                     }
+
+                                    print('🔍 Name match: $nameMatch');
+                                    print('🔍 Prenom match: $prenomMatch');
+
                                     if (nameMatch && prenomMatch) {
+                                      print('✅ Verification successful!');
                                       _showSuccessPopup();
                                     } else {
+                                      print('❌ Verification failed!');
                                       _showErrorPopup();
                                     }
+                                    return; // Important: return here to prevent navigation
                                   } else {
+                                    print('❌ OCR failed - no result');
                                     showDialog(
                                       context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Erreur'),
-                                        content: const Text(
-                                            'Impossible de lire le passeport.'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text('OK'),
+                                      builder:
+                                          (context) => AlertDialog(
+                                            title: const Text('Erreur'),
+                                            content: const Text(
+                                              'Impossible de lire le passeport.',
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.of(
+                                                          context,
+                                                        ).pop(),
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
                                     );
+                                    return; // Important: return here to prevent navigation
                                   }
                                 }
-                                // Fallback: show success popup if not using passport
+
+                                // Only navigate if not using passport verification
+                                print(
+                                  '📱 No passport verification - proceeding to home',
+                                );
                                 Navigator.pushAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const HomePage()),
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomePage(),
+                                  ),
                                   (route) => false,
                                 );
                               }
@@ -328,39 +387,39 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             labelRich
                 ? RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: label.substring(0, 1),
-                          style: const TextStyle(
-                            color: Color(0xFF1F2420),
-                            fontSize: 15,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                          ),
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: label.substring(0, 1),
+                        style: const TextStyle(
+                          color: Color(0xFF1F2420),
+                          fontSize: 15,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
                         ),
-                        TextSpan(
-                          text: label.substring(1),
-                          style: const TextStyle(
-                            color: Color(0xFF1F2420),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            height: 1.43,
-                          ),
+                      ),
+                      TextSpan(
+                        text: label.substring(1),
+                        style: const TextStyle(
+                          color: Color(0xFF1F2420),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          height: 1.43,
                         ),
-                      ],
-                    ),
-                  )
-                : Text(
-                    label,
-                    style: const TextStyle(
-                      color: Color(0xFF1F2420),
-                      fontSize: 15,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                    ),
+                      ),
+                    ],
                   ),
+                )
+                : Text(
+                  label,
+                  style: const TextStyle(
+                    color: Color(0xFF1F2420),
+                    fontSize: 15,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
             if (required)
               const Text(
                 '*',
@@ -381,10 +440,7 @@ class _SignUpPageState extends State<SignUpPage> {
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              side: const BorderSide(
-                width: 1,
-                color: Color(0xFFE5E7EB),
-              ),
+              side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
               borderRadius: BorderRadius.circular(12),
             ),
             shadows: const [
@@ -445,10 +501,7 @@ class _SignUpPageState extends State<SignUpPage> {
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(
-                  width: 1,
-                  color: Color(0xFFE5E7EB),
-                ),
+                side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
                 borderRadius: BorderRadius.circular(12),
               ),
               shadows: const [
@@ -464,43 +517,43 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 _pickedImage != null
                     ? Row(
-                        children: [
-                          Image.file(
-                            File(_pickedImage!.path),
-                            width: 40,
-                            height: 40,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 140,
-                            child: Text(
-                              _pickedImage!.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Color(0xFF919592),
-                                fontSize: 14,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w400,
-                                height: 1.43,
-                              ),
+                      children: [
+                        Image.file(
+                          File(_pickedImage!.path),
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 140,
+                          child: Text(
+                            _pickedImage!.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFF919592),
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              height: 1.43,
                             ),
                           ),
-                        ],
-                      )
+                        ),
+                      ],
+                    )
                     : const SizedBox(
-                        width: 198,
-                        child: Text(
-                          'Aucun fichier',
-                          style: TextStyle(
-                            color: Color(0xFF919592),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            height: 1.43,
-                          ),
+                      width: 198,
+                      child: Text(
+                        'Aucun fichier',
+                        style: TextStyle(
+                          color: Color(0xFF919592),
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          height: 1.43,
                         ),
                       ),
+                    ),
               ],
             ),
           ),
@@ -625,8 +678,9 @@ class _SignUpPageState extends State<SignUpPage> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor:
-          Colors.black.withOpacity(0.15), // Slightly grey, dim background
+      barrierColor: Colors.black.withOpacity(
+        0.15,
+      ), // Slightly grey, dim background
       builder: (context) {
         return Center(
           child: Container(
@@ -634,10 +688,7 @@ class _SignUpPageState extends State<SignUpPage> {
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(
-                  width: 1,
-                  color: Color(0xFFE5E7EB),
-                ),
+                side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
                 borderRadius: BorderRadius.circular(12),
               ),
               shadows: const [
@@ -693,10 +744,19 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 21),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      (route) => false,
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 12),
+                      horizontal: 25,
+                      vertical: 12,
+                    ),
                     decoration: ShapeDecoration(
                       color: const Color(0xFF4B935E),
                       shape: RoundedRectangleBorder(
@@ -734,10 +794,7 @@ class _SignUpPageState extends State<SignUpPage> {
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                side: const BorderSide(
-                  width: 1,
-                  color: Color(0xFFE5E7EB),
-                ),
+                side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
                 borderRadius: BorderRadius.circular(12),
               ),
               shadows: const [
@@ -793,7 +850,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   onTap: () => Navigator.of(context).pop(),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 25, vertical: 12),
+                      horizontal: 25,
+                      vertical: 12,
+                    ),
                     decoration: ShapeDecoration(
                       color: const Color(0xFFC70036),
                       shape: RoundedRectangleBorder(
@@ -822,7 +881,8 @@ class _SignUpPageState extends State<SignUpPage> {
   // Helper to upload passport and get OCR result
   Future<Map<String, dynamic>?> uploadPassport(File imageFile) async {
     var uri = Uri.parse(
-        'http://192.168.1.193:8000/ocr/passport'); // Local network IP for backend
+      'http://192.168.1.193:8000/ocr/passport',
+    ); // Local network IP for backend
     var request = http.MultipartRequest('POST', uri)
       ..files.add(await http.MultipartFile.fromPath('file', imageFile.path));
     var response = await request.send();
@@ -835,11 +895,9 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   String normalizeName(String name) {
-    return removeDiacritics(name)
-        .replaceAll('<', ' ')
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .trim()
-        .toUpperCase();
+    return removeDiacritics(
+      name,
+    ).replaceAll('<', ' ').replaceAll(RegExp(r'\s+'), ' ').trim().toUpperCase();
   }
 
   // Extract only the real given names from the MRZ (ignore everything after the first <<)
@@ -847,7 +905,8 @@ class _SignUpPageState extends State<SignUpPage> {
     final match = RegExp(r'^(.*?)(<{2,}.*)?$').firstMatch(mrzNames);
     String mainPart = match != null ? match.group(1) ?? '' : mrzNames;
     // Split on <, remove empty and single-letter words
-    List<String> words = mainPart.split('<').where((w) => w.trim().length > 1).toList();
+    List<String> words =
+        mainPart.split('<').where((w) => w.trim().length > 1).toList();
     return words.join(' ');
   }
 }
@@ -855,7 +914,7 @@ class _SignUpPageState extends State<SignUpPage> {
 class DateSelectionDialog extends StatelessWidget {
   final void Function(String date) onDateSelected;
   const DateSelectionDialog({Key? key, required this.onDateSelected})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
