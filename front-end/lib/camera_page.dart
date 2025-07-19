@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:al_insan_app_front/services/video_queue.dart';
+
+import 'package:al_insan_app_front/services/session.dart';
 import 'package:al_insan_app_front/services/video_sync_service.dart';
 
 class CameraPage extends StatefulWidget {
@@ -19,7 +22,6 @@ class _CameraPageState extends State<CameraPage> {
   bool isRecording = false;
   String? videoPath;
 
-  // Example list of Arabic names
   final List<String> names = [
     'محمد أحمد علي',
     'سارة يوسف',
@@ -35,9 +37,11 @@ class _CameraPageState extends State<CameraPage> {
 
   int nameIndex = 0;
   static const int namesPerPage = 4;
+  String sessionId = "";
+  Directory sessionDir = Directory("");
 
   List<String> get currentNames {
-    int end = (nameIndex + namesPerPage < names.length)
+    final end = (nameIndex + namesPerPage < names.length)
         ? nameIndex + namesPerPage
         : names.length;
     return names.sublist(nameIndex, end);
@@ -73,47 +77,67 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> startVideoRecording() async {
-    if (controller == null || controller!.value.isRecordingVideo) return;
-    final Directory appDir = await getApplicationDocumentsDirectory();
-    final String filePath =
-        '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
-    await controller!.startVideoRecording();
-    setState(() {
-      isRecording = true;
-      videoPath = filePath;
-      resetNames();
-    });
+    try {
+      sessionId = DateTime.now().millisecondsSinceEpoch.toString();
+      sessionDir = await DonationSessionManager.createSession(sessionId);
+
+      if (controller == null || controller!.value.isRecordingVideo) return;
+
+      final String filePath = '${sessionDir.path}/$sessionId.mp4';
+      await controller!.startVideoRecording();
+
+      setState(() {
+        isRecording = true;
+        videoPath = filePath;
+        resetNames();
+      });
+    } catch (e) {
+      _showError('Failed to start recording: $e');
+    }
   }
 
-Future<void> stopVideoRecording() async {
-  if (controller == null || !controller!.value.isRecordingVideo) return;
-  final XFile file = await controller!.stopVideoRecording();
-  final Directory appDir = await getApplicationDocumentsDirectory();
-  final String filePath =
-      '${appDir.path}/${DateTime.now().millisecondsSinceEpoch}.mp4';
-  print('Saving video to: $filePath');
-  await file.saveTo(filePath);
-  print('Saved to app dir, now saving to gallery...');
-  await GallerySaver.saveVideo(filePath);
-  print('Saved to gallery!');
-  
-  setState(() {
-    isRecording = false;
-    videoPath = filePath;
-  });
+  Future<void> stopVideoRecording() async {
+    try {
+      if (controller == null || !controller!.value.isRecordingVideo) return;
 
-  // 🧠 Your Supabase user ID (you'll need to pass it here)
-  final userId = "USER_ID_HERE"; // Replace with actual user ID logic
+      final XFile file = await controller!.stopVideoRecording();
+      final String filePath = '${sessionDir.path}/$sessionId.mp4';
+      await file.saveTo(filePath);
+      await GallerySaver.saveVideo(filePath);
 
-  // ✅ Add to queue and trigger sync
-  await VideoQueue.addToQueue(filePath, userId);
-  await VideoSyncService.syncQueuedVideos();
+      final File jsonFile = File('${sessionDir.path}/names.json');
+      await jsonFile.writeAsString(jsonEncode(names));
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Video saved and queued for upload!')),
-  );
-}
+      final File videoFile = File(filePath);
 
+      setState(() {
+        isRecording = false;
+        videoPath = filePath;
+      });
+
+      await DonationSessionManager.saveSession(
+        sessionId,
+        videoFile,
+        jsonFile,
+      );
+
+      // 🔁 Try to sync if online
+      await VideoSyncService.syncAllSessionsIfOnline();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Video saved and queued for upload!')),
+      );
+    } catch (e) {
+      _showError('Failed to stop recording: $e');
+    }
+  }
+
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   void dispose() {
@@ -124,10 +148,13 @@ Future<void> stopVideoRecording() async {
   @override
   Widget build(BuildContext context) {
     if (controller == null || !controller!.value.isInitialized) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
+
     return Scaffold(
-      appBar: AppBar(title: Text('Selfie Camera')),
+      appBar: AppBar(title: const Text('Selfie Camera')),
       body: Stack(
         children: [
           CameraPreview(controller!),
@@ -137,26 +164,28 @@ Future<void> stopVideoRecording() async {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 60),
+                  const SizedBox(height: 60),
                   Expanded(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ...currentNames.map((name) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12.0),
-                                child: Text(
-                                  name,
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
+                          ...currentNames.map(
+                            (name) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                              child: Text(
+                                name,
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
                                 ),
-                              )),
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 110),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +211,7 @@ Future<void> stopVideoRecording() async {
                       ),
                     ),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -192,8 +221,9 @@ Future<void> stopVideoRecording() async {
             right: 0,
             child: Center(
               child: FloatingActionButton(
-                onPressed:
-                    isRecording ? stopVideoRecording : startVideoRecording,
+                onPressed: isRecording
+                    ? stopVideoRecording
+                    : startVideoRecording,
                 child: Icon(isRecording ? Icons.stop : Icons.videocam),
               ),
             ),
