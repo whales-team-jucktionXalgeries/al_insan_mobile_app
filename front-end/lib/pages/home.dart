@@ -5,6 +5,7 @@ import '../../components/footer.dart';
 import 'package:al_insan_app_front/pages/help.dart';
 import 'package:camera/camera.dart';
 import '../camera_page.dart';
+import 'chatbot_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -557,6 +558,48 @@ class HomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: CustomFooter(selectedIndex: 0),
+      floatingActionButton: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatbotPage()),
+            );
+          },
+          child: Container(
+            width: 76,
+            height: 76,
+            decoration: ShapeDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment(0.50, -0.00),
+                end: Alignment(0.50, 1.00),
+                colors: [
+                  Color(0xFF93C29C), // main-shades-main-300
+                  Color(0xFF4B935E), // Main
+                ],
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28.36),
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0x3362B655),
+                  blurRadius: 24.96,
+                  offset: Offset(0, 12.48),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.chat_bubble_outline,
+              color: Colors.white,
+              size: 32,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

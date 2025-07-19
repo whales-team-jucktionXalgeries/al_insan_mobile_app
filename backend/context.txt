@@ -1,0 +1,32 @@
+This app is for a charity organization focused on helping poor people in Africa by facilitating the donation of money to buy "أضحية العيد" (Eid sacrifice animals).
+
+**Key Features:**
+- Users can buy one or more "أضحية" (sacrifice animals). The available types are:
+  - Sheep (خروف)
+  - Mouton (كبش)
+  - Cow (بقرة)
+  - Camel (جمل)
+- Each type of animal has a fixed price.
+- Users can also contribute any amount of money they wish. When enough people contribute and the total reaches the price of an animal, the animal will be purchased.
+- Users can choose which type of animal they want their contribution to go towards (e.g., cow, sheep, etc.).
+
+**Payment Methods:**
+- PayPal
+- Baridimob (via the app or WhatsApp, with proof of payment sent)
+- Dounapay
+- CIB (bank card)
+
+**Proof of Payment:**
+- Users can send proof of payment directly through the app.
+- Alternatively, users can contact the organization on WhatsApp and send proof of payment (for Baridimob or CIB).
+
+**Security and Verification:**
+- For security, users must upload a photo of their ID card or passport to confirm their identity.
+- The organization compares the user's name with the name on the payment proof to ensure the payment was made by the user.
+
+**After Payment Verification:**
+- Once payment is verified, the user can choose how to receive the video of their "أضحية":
+  - Via WhatsApp
+  - Through the app
+
+**Note:** The app only answers questions based on the information above.
