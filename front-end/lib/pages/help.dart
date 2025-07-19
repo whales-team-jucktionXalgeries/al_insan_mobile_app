@@ -1,6 +1,8 @@
 import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import '../../components/footer.dart';
+import '../camera_page.dart';
 import 'mouton.dart';
 
 class HelpPage extends StatelessWidget {
@@ -25,7 +27,7 @@ class HelpPage extends StatelessWidget {
                     blurRadius: 4,
                     offset: Offset(0, 4),
                     spreadRadius: 0,
-                  )
+                  ),
                 ],
               ),
               child: Row(
@@ -64,7 +66,10 @@ class HelpPage extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     decoration: ShapeDecoration(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -80,7 +85,7 @@ class HelpPage extends StatelessWidget {
                           blurRadius: 0.50,
                           offset: Offset(0, 1),
                           spreadRadius: 0.05,
-                        )
+                        ),
                       ],
                     ),
                     child: Row(
@@ -148,7 +153,12 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Mouton page
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const MoutonPage()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MoutonPage(),
+                                  ),
+                                );
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -195,11 +205,15 @@ class HelpPage extends StatelessWidget {
                                       clipBehavior: Clip.antiAlias,
                                       decoration: ShapeDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage("assets/mouton.jpg"),
+                                          image: AssetImage(
+                                            "assets/mouton.jpg",
+                                          ),
                                           fit: BoxFit.cover,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5.14),
+                                          borderRadius: BorderRadius.circular(
+                                            5.14,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -276,11 +290,15 @@ class HelpPage extends StatelessWidget {
                                       clipBehavior: Clip.antiAlias,
                                       decoration: ShapeDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage("assets/chevre.jpg"),
+                                          image: AssetImage(
+                                            "assets/chevre.jpg",
+                                          ),
                                           fit: BoxFit.cover,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5.14),
+                                          borderRadius: BorderRadius.circular(
+                                            5.14,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -366,7 +384,9 @@ class HelpPage extends StatelessWidget {
                                           fit: BoxFit.cover,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5.14),
+                                          borderRadius: BorderRadius.circular(
+                                            5.14,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -443,11 +463,15 @@ class HelpPage extends StatelessWidget {
                                       clipBehavior: Clip.antiAlias,
                                       decoration: ShapeDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage("assets/chameau.jpg"),
+                                          image: AssetImage(
+                                            "assets/chameau.jpg",
+                                          ),
                                           fit: BoxFit.cover,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(5.14),
+                                          borderRadius: BorderRadius.circular(
+                                            5.14,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -476,12 +500,71 @@ class HelpPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 32),
+                  // Test Camera Button
+                  Center(
+                    child: Container(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          // Get available cameras
+                          try {
+                            final cameras = await availableCameras();
+                            if (cameras.isNotEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => CameraPage(cameras: cameras),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('No cameras available'),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error accessing camera: $e'),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.videocam,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        label: const Text(
+                          'Test Camera & Gesture Detection',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4B935E),
+                          foregroundColor: Colors.white,
+                          elevation: 4,
+                          shadowColor: Colors.black26,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             // No content in the center
             const Expanded(child: SizedBox()),
-            
           ],
         ),
       ),
