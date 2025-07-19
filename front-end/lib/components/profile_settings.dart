@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class ProfileSettings extends StatelessWidget {
-  const ProfileSettings({Key? key}) : super(key: key);
+class ProfileSettings extends StatefulWidget {
+  const ProfileSettings({super.key});
+
+  @override
+  State<ProfileSettings> createState() => _ProfileSettingsState();
+}
+
+class _ProfileSettingsState extends State<ProfileSettings> {
+  bool _notificationsEnabled = true; // State for notification toggle
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +18,7 @@ class ProfileSettings extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(
-            width: 1,
-            color: Color(0xFFE5E7EB),
-          ),
+          side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
           borderRadius: BorderRadius.circular(12),
         ),
         shadows: const [
@@ -59,8 +63,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.person_outline,
                   label: 'Modifier profile',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Notifications
@@ -76,8 +83,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.lock_outline,
                   label: 'Securite',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Confidentialité
@@ -85,8 +95,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.privacy_tip_outlined,
                   label: 'Confidentialité',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
               ],
             ),
@@ -116,8 +129,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.payment,
                   label: 'Payement',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Aide est Support
@@ -125,8 +141,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.help_outline,
                   label: 'Aide est Support',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Dashboard
@@ -134,8 +153,11 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.dashboard_outlined,
                   label: 'Dashboard',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // se déconnecter
@@ -143,8 +165,12 @@ class ProfileSettings extends StatelessWidget {
                   context,
                   icon: Icons.logout,
                   label: 'se déconnecter',
-                  trailing: const Icon(Icons.arrow_forward_ios,
-                      size: 20, color: Color(0xFFBDBDBD)),
+                  isLogout: true, // Special flag for logout styling
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Color(0xFFBDBDBD),
+                  ),
                 ),
               ],
             ),
@@ -154,22 +180,29 @@ class ProfileSettings extends StatelessWidget {
     );
   }
 
-  Widget _settingsRow(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required Widget trailing}) {
+  Widget _settingsRow(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required Widget trailing,
+    bool isLogout = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
           children: [
-            Icon(icon, size: 24, color: const Color(0xFF4B935E)),
+            Icon(
+              icon,
+              size: 24,
+              color: isLogout ? Colors.red : const Color(0xFF4B935E),
+            ),
             const SizedBox(width: 16),
             Text(
               label,
-              style: const TextStyle(
-                color: Color(0xFF1F2420),
+              style: TextStyle(
+                color: isLogout ? Colors.red : const Color(0xFF1F2420),
                 fontSize: 15,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
@@ -184,40 +217,51 @@ class ProfileSettings extends StatelessWidget {
   }
 
   Widget _notificationSwitch() {
-    return Container(
-      width: 41.68,
-      height: 23.16,
-      decoration: ShapeDecoration(
-        color: const Color(0xFF4B935E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(11577.79),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _notificationsEnabled = !_notificationsEnabled;
+        });
+      },
+      child: Container(
+        width: 41.68,
+        height: 23.16,
+        decoration: ShapeDecoration(
+          color:
+              _notificationsEnabled
+                  ? const Color(0xFF4B935E)
+                  : const Color(0xFFE5E7EB),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(11577.79),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: 20.68,
-            top: 1.58,
-            child: Container(
-              width: 19.56,
-              height: 19.56,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(48.89),
-                ),
-                shadows: const [
-                  BoxShadow(
-                    color: Color(0x051D293D),
-                    blurRadius: 0.61,
-                    offset: Offset(0, 1.22),
-                    spreadRadius: 0.06,
+        child: Stack(
+          children: [
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 200),
+              left: _notificationsEnabled ? 20.68 : 1.44,
+              top: 1.58,
+              child: Container(
+                width: 19.56,
+                height: 19.56,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(48.89),
                   ),
-                ],
+                  shadows: const [
+                    BoxShadow(
+                      color: Color(0x051D293D),
+                      blurRadius: 0.61,
+                      offset: Offset(0, 1.22),
+                      spreadRadius: 0.06,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
