@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:al_insan_app_front/pages/home.dart';
 
 class PayMethodPage extends StatefulWidget {
   final double userAmount;
@@ -125,7 +126,13 @@ class _PayMethodPageState extends State<PayMethodPage> {
                 ),
                 const SizedBox(height: 21),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      (route) => false,
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                     decoration: ShapeDecoration(
