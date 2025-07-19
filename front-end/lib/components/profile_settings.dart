@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:al_insan_app_front/pages/welcome.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -187,32 +188,42 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     required Widget trailing,
     bool isLogout = false,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: isLogout ? Colors.red : const Color(0xFF4B935E),
-            ),
-            const SizedBox(width: 16),
-            Text(
-              label,
-              style: TextStyle(
-                color: isLogout ? Colors.red : const Color(0xFF1F2420),
-                fontSize: 15,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400,
-                height: 1.50,
+    return InkWell(
+      onTap: isLogout
+          ? () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const WelcomePage()),
+                (route) => false,
+              );
+            }
+          : null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 24,
+                color: isLogout ? Colors.red : const Color(0xFF4B935E),
               ),
-            ),
-          ],
-        ),
-        trailing,
-      ],
+              const SizedBox(width: 16),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isLogout ? Colors.red : const Color(0xFF1F2420),
+                  fontSize: 15,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  height: 1.50,
+                ),
+              ),
+            ],
+          ),
+          trailing,
+        ],
+      ),
     );
   }
 

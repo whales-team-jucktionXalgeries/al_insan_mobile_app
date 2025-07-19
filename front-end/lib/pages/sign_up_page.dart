@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:diacritic/diacritic.dart';
+import 'package:al_insan_app_front/pages/home.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -286,10 +287,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                     );
                                   }
-                                } else {
-                                  // Fallback: show success popup if not using passport
-                                  _showSuccessPopup();
                                 }
+                                // Fallback: show success popup if not using passport
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const HomePage()),
+                                  (route) => false,
+                                );
                               }
                             },
                           ),

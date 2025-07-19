@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../components/welcome_input.dart';
 import '../../components/big_buttons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:al_insan_app_front/pages/home.dart';
+import 'package:al_insan_app_front/pages/sign_up_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -107,40 +109,53 @@ class WelcomePage extends StatelessWidget {
             const SizedBox(height: 10),
             SizedBox(
                 width: 374,
-                child: Text.rich(
-              TextSpan(
-                  children: [
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
                       TextSpan(
-                          text: 'Vous n’avez pas de compte ? ',
-                          style: TextStyle(
-                              color: const Color(0xFF1F2420) /* text-color-main-body-text */,
-                              fontSize: 16,
-                              fontFamily: 'Baloo Bhaijaan 2',
-                              fontWeight: FontWeight.w400,
-                              height: 1.87,
-                          ),
+                        text: 'Vous n’avez pas de compte ? ',
+                        style: TextStyle(
+                          color: const Color(0xFF1F2420),
+                          fontSize: 16,
+                          fontFamily: 'Baloo Bhaijaan 2',
+                          fontWeight: FontWeight.w400,
+                          height: 1.87,
+                        ),
                       ),
-                      TextSpan(
-                          text: 'Créez-en un',
-                          style: TextStyle(
-                              color: const Color(0xFF1F2420) /* text-color-main-body-text */,
+                      WidgetSpan(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignUpPage()),
+                            );
+                          },
+                          child: Text(
+                            'Créez-en un',
+                            style: TextStyle(
+                              color: const Color(0xFF1F2420),
                               fontSize: 16,
                               fontFamily: 'Baloo Bhaijaan 2',
                               fontWeight: FontWeight.w600,
                               height: 1.87,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
+                        ),
                       ),
-                  ],
-              ),
-              textAlign: TextAlign.center,
+                    ],
+                  ),
                 ),
             ),
             const SizedBox(height: 20),
             PrimaryButton(
               label: 'S’inscrire',
               onPressed: () {
-                // TODO: Add your login logic
-                print('Connexion button pressed');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
               },
             ),
             
