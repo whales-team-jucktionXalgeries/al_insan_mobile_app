@@ -2,6 +2,7 @@ import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../pages/chats.dart';
+import '../pages/help.dart';
 
 class CustomFooter extends StatefulWidget {
   final int selectedIndex;
@@ -38,7 +39,13 @@ class _CustomFooterState extends State<CustomFooter> {
 
   void _onItemTapped(int index) {
     if (index == _currentIndex) return;
-    if (index == 2) {
+    if (index == 1) { // Aider tab
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HelpPage()),
+      );
+    }
+    if (index == 2) { // Messagerie tab
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ChatsPage()),
