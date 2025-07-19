@@ -2,6 +2,9 @@ import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import '../../components/footer.dart';
 import 'mouton.dart';
+import 'chevre.dart';
+import 'vache.dart';
+import 'chameau.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({Key? key}) : super(key: key);
@@ -229,7 +232,7 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Chèvre page
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => const ChevrePage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChevrePage()));
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -315,7 +318,7 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Vache page
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => const VachePage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const VachePage()));
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -396,7 +399,7 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Chameau page
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => const ChameauPage()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChamPage()));
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(

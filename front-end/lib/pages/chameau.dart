@@ -2,8 +2,8 @@ import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import '../../components/footer.dart';
 
-class MoutonPage extends StatelessWidget {
-  const MoutonPage({Key? key}) : super(key: key);
+class ChamPage extends StatelessWidget {
+  const ChamPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +114,7 @@ class MoutonPage extends StatelessWidget {
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
-                            image: AssetImage("assets/mouton.jpg"),
+                            image: AssetImage("assets/chameau.jpg"),
                             fit: BoxFit.cover,
                           ),
                           shape: RoundedRectangleBorder(
@@ -147,9 +147,9 @@ class MoutonPage extends StatelessWidget {
                                         SizedBox(
                                           width: double.infinity,
                                           child: Text(
-                                            'Don de Mouton',
+                                            'Don de Chameau',
                                             style: TextStyle(
-                                              color: const Color(0xFF4B935E),
+                                              color: AppColors.primary,
                                               fontSize: 22,
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.w700,
@@ -351,7 +351,7 @@ class MoutonPage extends StatelessWidget {
                             SizedBox(
                               width: double.infinity,
                               child: Text(
-                                '25,000 DA',
+                                '40,000 DA',
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                   color: const Color(0xFF4B935E),
