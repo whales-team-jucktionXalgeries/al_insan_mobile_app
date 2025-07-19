@@ -61,9 +61,14 @@ async def compare_total(
     if detected is None:
         raise HTTPException(422, "Could not detect total on receipt")
 
-    match = abs(detected - user_amount) < 0.01
+    # Only compare the integer (whole) part
+    detected_int = int(detected)
+    user_int = int(user_amount)
+    match = detected_int == user_int
     return JSONResponse({
         "match":    match,
         "detected": detected,
-        "user":     user_amount
+        "user":     user_amount,
+        "detected_int": detected_int,
+        "user_int": user_int
     })

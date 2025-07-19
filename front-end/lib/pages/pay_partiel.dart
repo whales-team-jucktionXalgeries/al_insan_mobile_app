@@ -308,13 +308,25 @@ class _PayPartielPageState extends State<PayPartielPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: InkWell(
                   onTap: () {
-                    // Navigate to pay_method page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PayMethodPage(),
-                      ),
-                    );
+                    // Navigate to pay_method page with amount
+                    double? amountValue;
+                    try {
+                      amountValue = double.parse(selectedAmount.replaceAll(RegExp(r'[^0-9.,]'), '').replaceAll(',', '.'));
+                    } catch (_) {
+                      amountValue = null;
+                    }
+                    if (amountValue != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PayMethodPage(userAmount: amountValue!),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Veuillez entrer un montant valide.')),
+                      );
+                    }
                   },
                   child: Container(
                     width: double.infinity,
