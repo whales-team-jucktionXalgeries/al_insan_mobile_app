@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../components/footer.dart';
 import 'pay_partiel.dart';
 
-class ChevrePage extends StatelessWidget {
-  const ChevrePage({Key? key}) : super(key: key);
+class ChamPage extends StatelessWidget {
+  const ChamPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class ChevrePage extends StatelessWidget {
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
                           image: DecorationImage(
-                            image: AssetImage("assets/chevre.jpg"),
+                            image: AssetImage("assets/chameau.jpg"),
                             fit: BoxFit.cover,
                           ),
                           shape: RoundedRectangleBorder(
@@ -148,7 +148,7 @@ class ChevrePage extends StatelessWidget {
                                         SizedBox(
                                           width: double.infinity,
                                           child: Text(
-                                            'Don de Chèvre',
+                                            'Don de Chameau',
                                             style: TextStyle(
                                               color: AppColors.primary,
                                               fontSize: 22,

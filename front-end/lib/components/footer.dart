@@ -1,7 +1,7 @@
 import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../pages/chats.dart';
+import '../pages/chats_full.dart';
 import '../pages/help.dart';
 import '../pages/profile_page.dart';
 
@@ -51,7 +51,7 @@ class _CustomFooterState extends State<CustomFooter> {
       // Messagerie tab
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ChatsPage()),
+        MaterialPageRoute(builder: (context) => const ChatsFull()),
       );
     }
     if (index == 3) {

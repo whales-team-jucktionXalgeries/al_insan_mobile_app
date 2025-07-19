@@ -1,6 +1,8 @@
-import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
-import '../../components/footer.dart';
+import '../theme/colors.dart';
+import '../components/footer.dart';
+import 'pay_partiel.dart';
+import 'pay_method.dart';
 
 class MoutonPage extends StatelessWidget {
   const MoutonPage({Key? key}) : super(key: key);
@@ -13,7 +15,7 @@ class MoutonPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Top section with white background (Mouton container)
+              // Header with back button
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
@@ -29,154 +31,98 @@ class MoutonPage extends StatelessWidget {
                   ],
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Title
-                    Padding(
-                      padding: const EdgeInsets.only(top: 14),
-                      child: SizedBox(
-                        width: 294,
-                        child: Text(
-                          'Aider',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF09090B),
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            height: 1.20,
-                            letterSpacing: -0.20,
-                          ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.chevron_left,
+                        size: 24,
+                        color: Color(0xFF09090B),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Text(
+                        'Don de Mouton',
+                        style: TextStyle(
+                          color: Color(0xFF09090B),
+                          fontSize: 20,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          height: 1.20,
+                          letterSpacing: -0.20,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Chevron left icon
-              Padding(
-                padding: const EdgeInsets.only(top: 19, left: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Icon(
-                      Icons.chevron_left,
-                      color: Color(0xFF09090B),
-                      size: 31,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 19),
-              // Mouton details container
+              
+              const SizedBox(height: 33),
+              
+              // Main content
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: const Color(0xFFE5E7EB),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x0C000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                        spreadRadius: -2,
-                      ),
-                      BoxShadow(
-                        color: Color(0x19000000),
-                        blurRadius: 6,
-                        offset: Offset(0, 4),
-                        spreadRadius: -1,
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 169,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          image: DecorationImage(
-                            image: AssetImage("assets/mouton.jpg"),
-                            fit: BoxFit.cover,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.14),
-                          ),
+                child: Column(
+                  children: [
+                    // Image container
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/mouton.jpg"),
+                          fit: BoxFit.cover,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      const SizedBox(height: 19),
-                      Container(
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Description
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        shadows: [
+                          BoxShadow(
+                            color: Color(0x0A000000),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Ce mouton sera sacrifié selon le rite halal, et sa viande distribuée à des familles nécessiteuses.',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          
+                          // Details
+                          Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Container(
-                                    width: double.infinity,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: Text(
-                                            'Don de Mouton',
-                                            style: TextStyle(
-                                              color: const Color(0xFF4B935E),
-                                              fontSize: 22,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w700,
-                                              height: 1.87,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 15),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: Text(
-                                            'Ce mouton sera sacrifié selon le rite halal, et sa viande distribuée à des familles nécessiteuses.',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.50,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 15),
-                                  Container(
-                                    width: double.infinity,
+                                  Expanded(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -346,27 +292,27 @@ class MoutonPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                '40,000 DA',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: const Color(0xFF4B935E),
-                                  fontSize: 23,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.87,
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '25,000 DA',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: const Color(0xFF4B935E),
+                          fontSize: 23,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700,
+                          height: 1.87,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 33),
@@ -391,30 +337,35 @@ class MoutonPage extends StatelessWidget {
               // Participation button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF4B935E),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Je prends en charge la totalité',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                        ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PayMethodPage(userAmount: 25000)));
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFF4B935E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Je prends en charge la totalité',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -422,34 +373,39 @@ class MoutonPage extends StatelessWidget {
               // Second participation button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFFFEFB),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.50,
-                        color: const Color(0xFF4B935E),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Je contribue partiellement',
-                        style: TextStyle(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PayPartielPage()));
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFFFFEFB),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1.50,
                           color: const Color(0xFF4B935E),
-                          fontSize: 20,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
                         ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Je contribue partiellement',
+                          style: TextStyle(
+                            color: const Color(0xFF4B935E),
+                            fontSize: 20,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
