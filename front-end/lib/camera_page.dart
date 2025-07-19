@@ -71,9 +71,10 @@ class _CameraPageState extends State<CameraPage> {
   Directory sessionDir = Directory("");
 
   List<String> get currentNames {
-    final end = (nameIndex + namesPerPage < names.length)
-        ? nameIndex + namesPerPage
-        : names.length;
+    int end =
+        (nameIndex + namesPerPage < names.length)
+            ? nameIndex + namesPerPage
+            : names.length;
     return names.sublist(nameIndex, end);
   }
 
@@ -312,63 +313,53 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  Future<void> startVideoRecording() async {
-    try {
-      sessionId = DateTime.now().millisecondsSinceEpoch.toString();
-      sessionDir = await DonationSessionManager.createSession(sessionId);
+Future<void> startVideoRecording() async {
+  if (controller == null ||
+      !controller!.value.isInitialized ||
+      controller!.value.isRecordingVideo) {
+    print('❌ Cannot start recording: controller not ready or already recording');
+    return;
+  }
 
-      if (controller == null || controller!.value.isRecordingVideo) return;
+  try {
+    print('🎬 Starting video recording...');
 
-      final String filePath = '${sessionDir.path}/$sessionId.mp4';
-    if (controller == null ||
-        !controller!.value.isInitialized ||
-        controller!.value.isRecordingVideo) {
-      print(
-        '❌ Cannot start recording: controller not ready or already recording',
-      );
-      return;
+    sessionId = DateTime.now().millisecondsSinceEpoch.toString();
+    sessionDir = await DonationSessionManager.createSession(sessionId);
+    final String filePath = '${sessionDir.path}/$sessionId.mp4';
+
+    bool wasImageStreamRunning = false;
+    if (_gestureDetectionEnabled && _gestureService?.isConnected == true) {
+      try {
+        await controller!.stopImageStream();
+        wasImageStreamRunning = true;
+        print('📷 Image stream temporarily stopped for recording start');
+      } catch (e) {
+        print('⚠️ Error stopping image stream: $e');
+      }
     }
 
-    try {
-      print('🎬 Starting video recording...');
+    await controller!.startVideoRecording();
 
-      // Temporarily stop image stream before starting recording
-      bool wasImageStreamRunning = false;
-      if (_gestureDetectionEnabled && _gestureService?.isConnected == true) {
-        try {
-          await controller!.stopImageStream();
-          wasImageStreamRunning = true;
-          print('📷 Image stream temporarily stopped for recording start');
-        } catch (e) {
-          print('⚠️ Error stopping image stream: $e');
-        }
-      }
+    setState(() {
+      isRecording = true;
+      videoPath = filePath;
+      resetNames();
+    });
 
-      await controller!.startVideoRecording();
-
-      setState(() {
-        isRecording = true;
-        resetNames();
-      });
-
-      // Start periodic frame capture for gesture detection during recording
-      if (wasImageStreamRunning &&
-          _gestureDetectionEnabled &&
-          _gestureService?.isConnected == true) {
-        _startRecordingGestureDetection();
-      }
-
-      print(
-        '✅ Video recording started successfully with gesture detection active',
-      );
-    } catch (e) {
-      print('❌ Error starting video recording: $e');
-      setState(() {
-        isRecording = false;
-      });
+    if (wasImageStreamRunning) {
+      _startRecordingGestureDetection();
     }
+
+    print('✅ Video recording started successfully');
+  } catch (e) {
+    print('❌ Error starting video recording: $e');
+    setState(() {
+      isRecording = false;
+    });
   }
-  }
+}
+
 
 Future<void> stopVideoRecording() async {
   if (controller == null || !controller!.value.isRecordingVideo) {
@@ -378,32 +369,31 @@ Future<void> stopVideoRecording() async {
 
   try {
     print('🛑 Stopping video recording...');
-
-    // Stop gesture detection stream if active
     _stopRecordingGestureDetection();
 
     final XFile file = await controller!.stopVideoRecording();
-
     final String filePath = '${sessionDir.path}/$sessionId.mp4';
     await file.saveTo(filePath);
     await GallerySaver.saveVideo(filePath);
 
-    final File videoFile = File(filePath);
     final File jsonFile = File('${sessionDir.path}/names.json');
     await jsonFile.writeAsString(jsonEncode(names));
+    final File videoFile = File(filePath);
 
     setState(() {
       isRecording = false;
       videoPath = filePath;
     });
 
-    // Save session locally
     await DonationSessionManager.saveSession(sessionId, videoFile, jsonFile);
-
-    // Sync with Supabase if online
     await VideoSyncService.syncAllSessionsIfOnline();
 
-    // Restart image stream for gesture detection
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Video saved and queued for upload!')),
+      );
+    }
+
     if (_gestureDetectionEnabled && _gestureService?.isConnected == true) {
       try {
         controller!.startImageStream(_processImageForGestures);
@@ -412,35 +402,91 @@ Future<void> stopVideoRecording() async {
         print('⚠️ Error restarting image stream: $e');
       }
     }
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Video saved and queued for upload!')),
-      );
-    }
-
-    print('✅ Video recording stopped and saved successfully');
   } catch (e) {
     print('❌ Error stopping video recording: $e');
-
     setState(() {
       isRecording = false;
     });
 
     _stopRecordingGestureDetection();
 
-    // Attempt to restart stream even on failure
     if (_gestureDetectionEnabled && _gestureService?.isConnected == true) {
       try {
         controller!.startImageStream(_processImageForGestures);
       } catch (streamError) {
-        print('⚠️ Error restarting image stream after error: $streamError');
+        print('⚠️ Error restarting image stream after recording error: $streamError');
       }
     }
-
-    _showError('Failed to stop recording: $e');
   }
 }
+
+  IconData _getConnectionIcon() {
+    switch (_connectionStatus) {
+      case ConnectionStatus.connected:
+        return Icons.wifi;
+      case ConnectionStatus.connecting:
+        return Icons.wifi_find;
+      case ConnectionStatus.error:
+        return Icons.wifi_off;
+      case ConnectionStatus.disconnected:
+      default:
+        return Icons.wifi_off;
+    }
+  }
+
+  Color _getConnectionColor() {
+    switch (_connectionStatus) {
+      case ConnectionStatus.connected:
+        return Colors.green;
+      case ConnectionStatus.connecting:
+        return Colors.orange;
+      case ConnectionStatus.error:
+        return Colors.red;
+      case ConnectionStatus.disconnected:
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _getConnectionText() {
+    if (!_gestureDetectionEnabled) {
+      return 'Gesture Detection OFF';
+    }
+
+    switch (_connectionStatus) {
+      case ConnectionStatus.connected:
+        return 'Gesture Detection ON';
+      case ConnectionStatus.connecting:
+        return 'Connecting...';
+      case ConnectionStatus.error:
+        return 'Connection Error';
+      case ConnectionStatus.disconnected:
+      default:
+        return 'Disconnected';
+    }
+  }
+
+  String _getGestureText(GestureType gesture) {
+    switch (gesture) {
+      case GestureType.thumbsUp:
+        return 'Thumbs Up 👍';
+      case GestureType.openPalm:
+        return 'Open Palm ✋';
+      case GestureType.fist:
+        return 'Fist ✊';
+      case GestureType.peace:
+        return 'Peace ✌️';
+      case GestureType.none:
+      default:
+        return 'None';
+    }
+  }
+
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
