@@ -246,7 +246,12 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Chèvre page
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChevrePage()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ChevrePage(),
+                                  ),
+                                );
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -336,7 +341,12 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Vache page
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const VachePage()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const VachePage(),
+                                  ),
+                                );
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -419,7 +429,12 @@ class HelpPage extends StatelessWidget {
                             child: InkWell(
                               onTap: () {
                                 // Navigate to Chameau page
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const ChamPage()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ChamPage(),
+                                  ),
+                                );
                               },
                               borderRadius: BorderRadius.circular(10.18),
                               child: AnimatedContainer(
@@ -502,66 +517,6 @@ class HelpPage extends StatelessWidget {
                         ],
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 32),
-                  // Test Camera Button
-                  Center(
-                    child: Container(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          // Get available cameras
-                          try {
-                            final cameras = await availableCameras();
-                            if (cameras.isNotEmpty) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => CameraPage(cameras: cameras),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('No cameras available'),
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Error accessing camera: $e'),
-                              ),
-                            );
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.videocam,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        label: const Text(
-                          'Test Camera & Gesture Detection',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4B935E),
-                          foregroundColor: Colors.white,
-                          elevation: 4,
-                          shadowColor: Colors.black26,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../../components/footer.dart';
 import 'package:al_insan_app_front/pages/help.dart';
+import 'package:camera/camera.dart';
+import '../camera_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,7 +21,10 @@ class HomePage extends StatelessWidget {
               // Top section with white background (Aide container)
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   boxShadow: [
@@ -28,7 +33,7 @@ class HomePage extends StatelessWidget {
                       blurRadius: 4,
                       offset: Offset(0, 4),
                       spreadRadius: 0,
-                    )
+                    ),
                   ],
                 ),
                 child: Row(
@@ -154,7 +159,12 @@ class HomePage extends StatelessWidget {
                             padding: const EdgeInsets.only(right: 16),
                             child: Container(
                               width: 321,
-                              padding: const EdgeInsets.only(top: 15, left: 16, right: 16, bottom: 16),
+                              padding: const EdgeInsets.only(
+                                top: 15,
+                                left: 16,
+                                right: 16,
+                                bottom: 16,
+                              ),
                               decoration: ShapeDecoration(
                                 color: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -188,8 +198,10 @@ class HomePage extends StatelessWidget {
                                     width: double.infinity,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width: 289,
@@ -212,12 +224,15 @@ class HomePage extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Karim .b',
@@ -252,7 +267,12 @@ class HomePage extends StatelessWidget {
                             padding: const EdgeInsets.only(right: 16),
                             child: Container(
                               width: 321,
-                              padding: const EdgeInsets.only(top: 15, left: 16, right: 16, bottom: 16),
+                              padding: const EdgeInsets.only(
+                                top: 15,
+                                left: 16,
+                                right: 16,
+                                bottom: 16,
+                              ),
                               decoration: ShapeDecoration(
                                 color: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -286,8 +306,10 @@ class HomePage extends StatelessWidget {
                                     width: double.infinity,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width: 289,
@@ -310,12 +332,15 @@ class HomePage extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Nadia .k',
@@ -350,7 +375,12 @@ class HomePage extends StatelessWidget {
                             padding: const EdgeInsets.only(right: 16),
                             child: Container(
                               width: 321,
-                              padding: const EdgeInsets.only(top: 15, left: 16, right: 16, bottom: 16),
+                              padding: const EdgeInsets.only(
+                                top: 15,
+                                left: 16,
+                                right: 16,
+                                bottom: 16,
+                              ),
                               decoration: ShapeDecoration(
                                 color: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -384,8 +414,10 @@ class HomePage extends StatelessWidget {
                                     width: double.infinity,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width: 289,
@@ -408,12 +440,15 @@ class HomePage extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Yacine .z',
@@ -446,6 +481,74 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 39),
+                    Text(
+                      'Sacrifice Recording (for testing)',
+                      style: TextStyle(
+                        color: const Color(0xFF4B935E),
+                        fontSize: 24,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        height: 1.87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          // Get available cameras
+                          try {
+                            final cameras = await availableCameras();
+                            if (cameras.isNotEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => CameraPage(cameras: cameras),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('No cameras available'),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error accessing camera: $e'),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.videocam,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        label: const Text(
+                          'Test Camera & Gesture Detection',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4B935E),
+                          foregroundColor: Colors.white,
+                          elevation: 4,
+                          shadowColor: Colors.black26,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -457,7 +560,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectCard(String imagePath, String title, String description, {required bool isClickable, BuildContext? context}) {
+  Widget _buildProjectCard(
+    String imagePath,
+    String title,
+    String description, {
+    required bool isClickable,
+    BuildContext? context,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(right: 16),
       child: SizedBox(
@@ -473,10 +582,7 @@ class HomePage extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1,
-                    color: const Color(0xFFE5E7EB),
-                  ),
+                  side: BorderSide(width: 1, color: const Color(0xFFE5E7EB)),
                   borderRadius: BorderRadius.circular(9.25),
                 ),
                 shadows: [
@@ -542,31 +648,41 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   GestureDetector(
-                    onTap: isClickable && context != null
-                        ? () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HelpPage()),
-                            );
-                          }
-                        : null,
+                    onTap:
+                        isClickable && context != null
+                            ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HelpPage(),
+                                ),
+                              );
+                            }
+                            : null,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.13, vertical: 7.58),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12.13,
+                        vertical: 7.58,
+                      ),
                       decoration: ShapeDecoration(
-                        color: isClickable ? const Color(0xFF4B935E) : Colors.grey.shade400,
+                        color:
+                            isClickable
+                                ? const Color(0xFF4B935E)
+                                : Colors.grey.shade400,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9.25),
                         ),
-                        shadows: isClickable
-                            ? [
-                                BoxShadow(
-                                  color: Color(0x051D293D),
-                                  blurRadius: 0.50,
-                                  offset: Offset(0, 1),
-                                  spreadRadius: 0.05,
-                                )
-                              ]
-                            : [],
+                        shadows:
+                            isClickable
+                                ? [
+                                  BoxShadow(
+                                    color: Color(0x051D293D),
+                                    blurRadius: 0.50,
+                                    offset: Offset(0, 1),
+                                    spreadRadius: 0.05,
+                                  ),
+                                ]
+                                : [],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -608,11 +724,7 @@ class HomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(9.25),
                       ),
                       child: Center(
-                        child: Icon(
-                          Icons.lock,
-                          color: Colors.black,
-                          size: 32,
-                        ),
+                        child: Icon(Icons.lock, color: Colors.black, size: 32),
                       ),
                     ),
                   ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import '../camera_page.dart';
 
 class WorkerPageAfterLoggedIn extends StatefulWidget {
   const WorkerPageAfterLoggedIn({super.key});
