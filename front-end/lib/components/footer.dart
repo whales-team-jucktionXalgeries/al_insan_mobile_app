@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../pages/chats_full.dart';
 import '../pages/help.dart';
+import '../pages/profile_page.dart';
 
 class CustomFooter extends StatefulWidget {
   final int selectedIndex;
@@ -39,19 +40,27 @@ class _CustomFooterState extends State<CustomFooter> {
 
   void _onItemTapped(int index) {
     if (index == _currentIndex) return;
-    if (index == 1) { // Aider tab
+    if (index == 1) {
+      // Aider tab
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HelpPage()),
       );
     }
-    if (index == 2) { // Messagerie tab
+    if (index == 2) {
+      // Messagerie tab
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ChatsFull()),
       );
     }
-    // Add navigation for other indices if needed
+    if (index == 3) {
+      // Profile tab
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfilePage()),
+      );
+    }
   }
 
   @override
@@ -65,10 +74,7 @@ class _CustomFooterState extends State<CustomFooter> {
         decoration: BoxDecoration(
           color: const Color(0xFFFFFEFB),
           border: const Border(
-            top: BorderSide(
-              width: 1,
-              color: Color(0xFFE5E7EB),
-            ),
+            top: BorderSide(width: 1, color: Color(0xFFE5E7EB)),
           ),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12),
