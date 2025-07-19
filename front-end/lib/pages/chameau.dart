@@ -1,6 +1,7 @@
 import 'package:al_insan_app_front/theme/colors.dart';
 import 'package:flutter/material.dart';
 import '../../components/footer.dart';
+import 'pay_partiel.dart';
 
 class ChamPage extends StatelessWidget {
   const ChamPage({Key? key}) : super(key: key);
@@ -422,34 +423,39 @@ class ChamPage extends StatelessWidget {
               // Second participation button
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFFFEFB),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.50,
-                        color: const Color(0xFF4B935E),
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Je contribue partiellement',
-                        style: TextStyle(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const PayPartielPage()));
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFFFFEFB),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1.50,
                           color: const Color(0xFF4B935E),
-                          fontSize: 20,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
                         ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Je contribue partiellement',
+                          style: TextStyle(
+                            color: const Color(0xFF4B935E),
+                            fontSize: 20,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
