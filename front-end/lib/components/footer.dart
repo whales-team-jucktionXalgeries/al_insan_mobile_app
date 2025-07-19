@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../pages/chats_full.dart';
 import '../pages/help.dart';
 import '../pages/profile_page.dart';
+import '../pages/home.dart';
 
 class CustomFooter extends StatefulWidget {
   final int selectedIndex;
@@ -40,6 +41,13 @@ class _CustomFooterState extends State<CustomFooter> {
 
   void _onItemTapped(int index) {
     if (index == _currentIndex) return;
+    if (index == 0) {
+      // Accueil tab
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
     if (index == 1) {
       // Aider tab
       Navigator.pushReplacement(
